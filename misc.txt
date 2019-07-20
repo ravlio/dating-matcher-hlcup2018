@@ -1,0 +1,35 @@
+500k юзеров из файла, 808Mib. 88.5k req, 50.8% post, 9.9% group, 24.4% filter, 14.9% suggest+recommend.
+
+//    accounts: 500000
+//    unique countries: 71
+//    unique cities: 573
+//    unique fname: 109
+//    unique snames: 1639
+//    unique interests: 90
+
+male/female - порову
+
+
+null типов
+   911  empty .fname
+   2641  empty .sname
+   3820  empty .city
+   1944  empty .country
+
+
+sname_starts вызывалась  15 313 339 раз
+
+
+Еще там порядка 20kk лайков, но об этом наверно знают только те, кто юзает sql)
+
+и около 10k вставляется
+
+обычная фаза
+{"RequestsCount":1485,"FirstRequestAt":"20:51:32","LastRequestAt":"20:52:31"},
+{"RequestsCount":4957,"FirstRequestAt":"20:52:37","LastRequestAt":"20:54:17"},
+{"RequestsCount":7413,"FirstRequestAt":"20:54:23","LastRequestAt":"20:54:53"}]
+
+рейтинговая фаза
+{"RequestsCount":13368,"FirstRequestAt":"22:29:39","LastRequestAt":"22:32:39"},
+{"RequestsCount":44656,"FirstRequestAt":"22:32:46","LastRequestAt":"22:37:46"},
+{"RequestsCount":29690,"FirstRequestAt":"22:37:52","LastRequestAt":"22:38:52"}]

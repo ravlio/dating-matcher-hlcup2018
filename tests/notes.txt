@@ -1,0 +1,3 @@
+Загрузка json с пулом AccountRequest и без
+BenchmarkRequestUnmarshal-4   	       1	3967187099 ns/op	198383496 B/op	 5500305 allocs/op
+BenchmarkRequestUnmarshal-4   	       1	6226270468 ns/op	325461496 B/op	 6544414 allocs/op

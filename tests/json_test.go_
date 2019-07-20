@@ -1,0 +1,76 @@
+package tests
+
+import (
+	"github.com/ravlio/highloadcup2018/gojay"
+	"github.com/ravlio/highloadcup2018/account"
+	"github.com/ravlio/highloadcup2018/requests"
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
+
+func TestJSONRoundtrip(t *testing.T) {
+	j := []byte(`{"birth": 811778830, 
+"country": "\u0418\u0441\u043f\u0430\u0442\u0440\u0438\u0441","sex": "m","likes": [{"ts": 1532257894, "id": 4844}, {"ts": 1538148125, "id": 5856}, {"ts": 1484501471, "id": 6750}, {"ts": 1489241266, "id": 3332}, {"ts": 1540814553, "id": 1740}],"status": "\u0432\u0441\u0451 \u0441\u043b\u043e\u0436\u043d\u043e","id": 1,"phone": "8(921)1234567","joined": 1306886400,"premium": {"start": 1529225845, "finish": 1531817845},"email": "achidogyr@yandex.ru","fname": "\u0412\u0430\u0434\u0438\u043c","interests": ["\u041f\u043b\u044f\u0436\u043d\u044b\u0439 \u043e\u0442\u0434\u044b\u0445", "\u0424\u043e\u0442\u043e\u0433\u0440\u0430\u0444\u0438\u044f", "\u0422\u0430\u043d\u0446\u0435\u0432\u0430\u043b\u044c\u043d\u0430\u044f", "\u041c\u0430\u0442\u0440\u0438\u0446\u0430", "\u0410\u043f\u0435\u043b\u044c\u0441\u0438\u043d\u043e\u0432\u044b\u0439 \u0441\u043e\u043a"],"sname": "\u0424\u0430\u043b\u0435\u043d\u043b\u0430\u043d","city": "\u0420\u043e\u0441\u0435\u043b\u043e\u043d\u0430"}`)
+
+	req := &AccountRequest{}
+	err := gojay.UnmarshalJSONObject(j, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	acc := &account.Account{}
+	err = acc.MergeWithRequest(req)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	b, err := gojay.MarshalJSONObject(acc)
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Equal(t, string(j), string(b))
+
+}
+
+func TestJSONInvalidValuesDecode(t *testing.T) {
+	j := [][]byte{
+		[]byte(`{"birth": "dsf"}`),
+		[]byte(`{"country": ""}`),
+		[]byte(`{"country": 123}`),
+		[]byte(`{"sex": ""}`),
+		[]byte(`{"sex": "j"}`),
+		[]byte(`{"sex": 1}`),
+		[]byte(`{"likes": [{"ts": "d", "id": 4844}, {"ts": 1538148125, "id": 5856}, {"ts": 1484501471, "id": 6750}, {"ts": 1489241266, "id": 3332}, {"ts": 1540814553, "id": 1740}]}`),
+		[]byte(`{"status": ""}`),
+		[]byte(`{"status": "\u0432\u0441\u0451 \u0441\u043b\u043e\u0436\u043d\u043e asdasd"}`),
+		[]byte(`{"id": "1"}`),
+		[]byte(`{"joined": "1306886400""}`),
+		[]byte(`{"premium": {"start": "1529225845", "finish": 1531817845}}`),
+		[]byte(`{"premium": {"start": "1529225845", "finish": "1531817845"}}`),
+		//[]byte(`{"email": "achidogyryandex.ru"}`),
+		[]byte(`{"email": ""}`),
+		[]byte(`{"email": 0}`),
+		[]byte(`{"fname": ""}`),
+		[]byte(`{"fname": 1}`),
+		[]byte(`{"interests": [1, "\u0424\u043e\u0442\u043e\u0433\u0440\u0430\u0444\u0438\u044f", "\u0422\u0430\u043d\u0446\u0435\u0432\u0430\u043b\u044c\u043d\u0430\u044f", "\u041c\u0430\u0442\u0440\u0438\u0446\u0430", "\u0410\u043f\u0435\u043b\u044c\u0441\u0438\u043d\u043e\u0432\u044b\u0439 \u0441\u043e\u043a"]}`),
+		[]byte(`{"interests": []}`),
+		[]byte(`{"sname": ""}`),
+		[]byte(`{"sname": 1}`),
+		[]byte(`{"city": 0}`),
+		[]byte(`{"city": ""}`),
+		[]byte(`{"phone": 1}`),
+		[]byte(`{"phone": "1232"}`),
+		[]byte(`{"phone": "8(123)"}`),
+		[]byte(`{"phone": "(123)3423432"}`),
+		[]byte(`{"phone": "(1233423432"}`),
+	}
+
+	for _, b := range j {
+		req := &AccountRequest{}
+		err := gojay.UnmarshalJSONObject(b, req)
+		if err == nil {
+			t.Errorf("%q expected error", string(b))
+		}
+	}
+}

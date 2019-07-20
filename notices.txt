@@ -1,0 +1,123 @@
+read dir direct vs from zip
+
+direct   167684 msec
+form zip 243287 msec
+
+
+
+fatal error: concurrent map writes
+
+goroutine 9 [running]:
+runtime.throw(0x15f6459, 0x15)
+	/usr/local/go/src/runtime/panic.go:608 +0x72 fp=0xc00004fc50 sp=0xc00004fc20 pc=0x102d992
+runtime.mapassign_fast32(0x1550a40, 0xc0001c80f0, 0x113f38, 0xc0104de520)
+	/usr/local/go/src/runtime/map_fast32.go:172 +0x2e8 fp=0xc00004fc90 sp=0xc00004fc50 pc=0x1011c98
+github.com/ravlio/highloadcup2018.(*DB).IndexLikes(0xc00018a600, 0xc12b93ef00, 0x1f, 0x1f, 0x1, 0x1f, 0x8)
+	/Users/ravlio/go/src/github.com/ravlio/highloadcup2018/index.go:491 +0x276 fp=0xc00004fd98 sp=0xc00004fc90 pc=0x1484b36
+github.com/ravlio/highloadcup2018.(*DB).makeMainIndexes(0xc00018a600, 0xc027fc1e00, 0x10013d8b9, 0x0, 0x0)
+	/Users/ravlio/go/src/github.com/ravlio/highloadcup2018/index.go:455 +0x1e5b fp=0xc00004ff60 sp=0xc00004fd98 pc=0x148339b
+github.com/ravlio/highloadcup2018.(*DB).runIndexWorker(0xc00018a600, 0xc000024770)
+	/Users/ravlio/go/src/github.com/ravlio/highloadcup2018/index.go:38 +0x8e fp=0xc00004ffd0 sp=0xc00004ff60 pc=0x14814be
+runtime.goexit()
+	/usr/local/go/src/runtime/asm_amd64.s:1333 +0x1 fp=0xc00004ffd8 sp=0xc00004ffd0 pc=0x105cf21
+created by github.com/ravlio/highloadcup2018.(*DB).Start
+	/Users/ravlio/go/src/github.com/ravlio/highloadcup2018/db.go:200 +0x97
+
+goroutine 1 [chan receive]:
+
+
+
+
+
+
+/// MAP accounts
+
+ ~/gowork/src/github.com/ravlio/highloadcup2018   master ● ?  go tool pprof http://localhost:6060/debug/pprof/profile                                                                                                                                                                               INT(-2) ↵  09:14 Dur  17:20:39  int-popup-server/popup-server ⎈
+Fetching profile over HTTP from http://localhost:6060/debug/pprof/profile
+Saved profile in /Users/maksim.bogdanov/pprof/pprof.samples.cpu.008.pb.gz
+Type: cpu
+Time: Jan 22, 2019 at 5:20pm (MSK)
+Duration: 30.13s, Total samples = 36.86s (122.33%)
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof) top30
+Showing nodes accounting for 35.13s, 95.31% of 36.86s total
+Dropped 216 nodes (cum <= 0.18s)
+Showing top 30 nodes out of 94
+      flat  flat%   sum%        cum   cum%
+     7.26s 19.70% 19.70%      7.59s 20.59%  runtime.mapaccess2_fast32
+     7.06s 19.15% 38.85%     20.28s 55.02%  github.com/ravlio/highloadcup2018.(*DB).GroupAccounts
+     4.33s 11.75% 50.60%      4.33s 11.75%  runtime.kevent
+     2.38s  6.46% 57.05%      3.60s  9.77%  runtime.mapaccess2_fast64
+     1.76s  4.77% 61.83%      1.77s  4.80%  runtime.heapBitsForObject
+     1.66s  4.50% 66.33%      1.66s  4.50%  syscall.Syscall
+     1.28s  3.47% 69.80%      4.63s 12.56%  runtime.scanobject
+     1.11s  3.01% 72.82%      1.11s  3.01%  runtime.memmove
+     1.08s  2.93% 75.75%      5.41s 14.68%  runtime.netpoll
+     1.05s  2.85% 78.59%      4.67s 12.67%  github.com/ravlio/highloadcup2018.(*DB).incrementGroup
+     0.79s  2.14% 80.74%      0.79s  2.14%  runtime.aeshash64
+     0.73s  1.98% 82.72%      0.73s  1.98%  runtime.heapBits.bits (inline)
+     0.60s  1.63% 84.35%      0.60s  1.63%  runtime.usleep
+     0.59s  1.60% 85.95%      0.59s  1.60%  runtime.markBits.isMarked (inline)
+     0.58s  1.57% 87.52%      8.17s 22.16%  github.com/ravlio/highloadcup2018/account.(*Store).GetAccountUnsafe (inline)
+     0.47s  1.28% 88.80%      0.47s  1.28%  runtime.mach_semaphore_signal
+     0.42s  1.14% 89.93%      1.92s  5.21%  github.com/ravlio/highloadcup2018/trie/patricia.(*sparseChildList).walk
+     0.41s  1.11% 91.05%      0.43s  1.17%  github.com/ravlio/highloadcup2018/vendor/github.com/RoaringBitmap/roaring.(*bitmapContainer).fillLeastSignificant16bits
+     0.30s  0.81% 91.86%      0.30s  0.81%  runtime.add (inline)
+     0.25s  0.68% 92.54%      0.25s  0.68%  runtime.memclrNoHeapPointers
+     0.23s  0.62% 93.16%      0.23s  0.62%  runtime.aeshash32
+     0.23s  0.62% 93.79%      0.85s  2.31%  runtime.greyobject
+     0.19s  0.52% 94.30%      0.56s  1.52%  github.com/ravlio/highloadcup2018/trie/patricia.tries.Less (inline)
+     0.10s  0.27% 94.57%      0.62s  1.68%  runtime.mallocgc
+     0.09s  0.24% 94.82%      1.92s  5.21%  github.com/ravlio/highloadcup2018/trie/patricia.(*denseChildList).walk
+     0.06s  0.16% 94.98%     10.44s 28.32%  runtime.gcDrain
+     0.04s  0.11% 95.09%      0.37s  1.00%  runtime.slicebytetostring
+     0.03s 0.081% 95.17%      0.26s  0.71%  runtime.convT2Islice
+     0.03s 0.081% 95.25%      0.60s  1.63%  sort.insertionSort
+     0.02s 0.054% 95.31%      0.44s  1.19%  github.com/ravlio/highloadcup2018/vendor/github.com/RoaringBitmap/roaring.(*Bitmap).Add
+
+phase 1 ids 7776 dur 1m41.531271864s
+phase 3 ids 14981 dur 3m8.346872459s
+
+/// SLICE accounts
+
+
+Showing top 30 nodes out of 100
+      flat  flat%   sum%        cum   cum%
+     9.26s 21.11% 21.11%     18.53s 42.25%  github.com/ravlio/highloadcup2018.(*DB).GroupAccounts
+     6.27s 14.30% 35.41%      6.27s 14.30%  runtime.kevent
+     4.34s  9.90% 45.30%      6.01s 13.70%  runtime.mapaccess2_fast64
+     3.14s  7.16% 52.46%      8.96s 20.43%  runtime.scanobject
+     2.73s  6.22% 58.69%      2.79s  6.36%  runtime.heapBitsForObject
+     2.58s  5.88% 64.57%      2.58s  5.88%  syscall.Syscall
+     1.75s  3.99% 68.56%      7.81s 17.81%  github.com/ravlio/highloadcup2018.(*DB).incrementGroup
+     1.55s  3.53% 72.09%      1.55s  3.53%  runtime.heapBits.bits (inline)
+     1.44s  3.28% 75.38%      7.71s 17.58%  runtime.netpoll
+     1.34s  3.06% 78.43%      1.34s  3.06%  runtime.memmove
+     1.15s  2.62% 81.05%      1.15s  2.62%  runtime.memclrNoHeapPointers
+     1.13s  2.58% 83.63%      1.13s  2.58%  runtime.aeshash64
+     1.04s  2.37% 86.00%      1.04s  2.37%  runtime.markBits.isMarked (inline)
+     0.68s  1.55% 87.55%      0.68s  1.55%  github.com/ravlio/highloadcup2018/account.(*Store).GetAccountUnsafe (inline)
+     0.65s  1.48% 89.03%      2.51s  5.72%  github.com/ravlio/highloadcup2018/trie/patricia.(*sparseChildList).walk
+     0.64s  1.46% 90.49%      0.64s  1.46%  runtime.mach_semaphore_signal
+     0.56s  1.28% 91.77%      0.94s  2.14%  github.com/ravlio/highloadcup2018/trie/patricia.tries.Less (inline)
+     0.34s  0.78% 92.54%      0.34s  0.78%  runtime.add (inline)
+     0.34s  0.78% 93.32%      1.43s  3.26%  runtime.greyobject
+     0.33s  0.75% 94.07%      0.33s  0.75%  github.com/ravlio/highloadcup2018/requests.requests.GroupKeys.Has (inline)
+     0.14s  0.32% 94.39%      2.51s  5.72%  github.com/ravlio/highloadcup2018/trie/patricia.(*denseChildList).walk
+     0.14s  0.32% 94.71%     17.29s 39.42%  runtime.gcDrain
+     0.11s  0.25% 94.96%      0.42s  0.96%  github.com/ravlio/highloadcup2018/vendor/github.com/RoaringBitmap/roaring.(*arrayContainer).iaddReturnMinimized
+     0.05s  0.11% 95.08%      1.44s  3.28%  runtime.mallocgc
+     0.04s 0.091% 95.17%      3.90s  8.89%  github.com/ravlio/highloadcup2018/querier.(*Querier).Exec
+     0.02s 0.046% 95.21%      0.50s  1.14%  github.com/ravlio/highloadcup2018/vendor/github.com/RoaringBitmap/roaring.(*Bitmap).Add
+     0.02s 0.046% 95.26%      0.45s  1.03%  runtime.mcall
+     0.01s 0.023% 95.28%      0.79s  1.80%  runtime.(*gcWork).balance
+     0.01s 0.023% 95.30%      0.32s  0.73%  runtime.(*mcentral).cacheSpan
+     0.01s 0.023% 95.33%      1.07s  2.44%  runtime.(*mheap).alloc
+
+phase 1 ids 7776 dur 59.870547923s
+phase 3 ids 14981 dur 1m45.588727833s
+
+
+CONCLUSION: map access: ~121ns vs slice access ~1ns
+
+
