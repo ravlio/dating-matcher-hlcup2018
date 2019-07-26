@@ -4,4 +4,4 @@ The engine reads and loads json data in well optimized manner into memory, makes
 
 Engine resolves filtration, collaborative filtering, grouping with filtering and suggestions. 
 
-Here I preferred performance over code beautifully, so sorry for quality :)
+Here I preferred performance over code beautifully, so sorry for quality :) I have forked and patched several libraries like gojay, skiplists for better peformance.
